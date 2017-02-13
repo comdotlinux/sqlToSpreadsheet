@@ -3,6 +3,7 @@ package com.linux.sql.to.spreadsheet.batch;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +34,25 @@ public class SpreadsheetWriter implements ItemWriter<List<Map<String, Object>>> 
     public void write(List<? extends List<Map<String, Object>>> tables) throws Exception {
         List<Map<String, Object>> table = tables.get(0);
 
+        XSSFRow header = sheet.createRow(0);
         for (int t_row = 0; t_row < table.size(); t_row++) {
-            XSSFRow row = sheet.createRow(t_row);
+            XSSFRow row = sheet.createRow(t_row + 1);
             Map<String, Object> get = table.get(t_row);
             int t_col = 0;
             for (Map.Entry<String, Object> entry : get.entrySet()) {
+                if (t_row == 0) {
+                    createStringCell(header, entry.getKey(), t_col);
+                }
                 Object value = entry.getValue();
-                createStringCell(row, (String)value, t_col++);
+                if (value instanceof Integer) {
+                    createNumericCell(row, ((Integer) value).doubleValue(), t_col);
+                } else if (value instanceof Timestamp) {
+                    Timestamp ts = (Timestamp) value;
+                    createStringCell(row, value.toString(), t_col);
+                } else {
+                    createStringCell(row, (String) value, t_col);
+                }
+                t_col++;
             }
 
         }

@@ -55,6 +55,13 @@
             <artifactId>derby</artifactId>
             <version>10.13.1.1</version>
         </dependency>
+        <!-- This only works with oracle login.
+        See here : http://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9010 -->
+<!--        <dependency> 
+            <groupId>com.oracle.jdbc</groupId> 
+            <artifactId>ojdbc7</artifactId> 
+            <version>12.1.0.2</version> 
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>

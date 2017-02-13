@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -34,6 +35,7 @@ import org.springframework.batch.item.file.transform.DefaultFieldSet;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -42,12 +44,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.FileSystemResource;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan
+@ComponentScan(basePackageClasses = DefaultBatchConfigurer.class)
 @EnableBatchProcessing
+@PropertySource("classpath:com/linux/application.properties")
 public class Batch {
 
     @Autowired
@@ -78,13 +82,7 @@ public class Batch {
         reader.setRecordSeparatorPolicy(sepPolicy);
         final DefaultLineMapper<String> lineMapper = new DefaultLineMapper<>();
         lineMapper.setFieldSetMapper((FieldSet fs) -> fs.getValues()[0]);
-        lineMapper.setLineTokenizer(new LineTokenizer() {
-            @Override
-            public FieldSet tokenize(String line) {
-                return new DefaultFieldSet(new String[]{line});
-            }
-
-        });
+        lineMapper.setLineTokenizer((String line) -> new DefaultFieldSet(new String[]{line}));
         reader.setLineMapper(lineMapper);
         reader.setResource(new FileSystemResource(Paths.get("src/main/resources/com/linux/sql/input.sql").toFile()));
         return reader;
