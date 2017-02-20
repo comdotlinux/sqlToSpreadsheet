@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -29,15 +30,20 @@ import org.springframework.batch.item.ItemWriter;
 public class SpreadsheetWriter implements ItemWriter<List<Map<String, Object>>> {
 
     private static final String FILE_NAME = "target/output";
+    
+    private XSSFWorkbook workbook = new XSSFWorkbook();
+    private static final String DATE_TIME = DateFormatUtils.format(Calendar.getInstance(),"yyyyMMdd_HHmmss");
+    String outputFilename = FILE_NAME + "_" + DATE_TIME + ".xlsx";
+    XSSFSheet sheet;
+    @BeforeStep
+    public void saveStepExecution(StepExecution stepExecution) {
+//        stepExecution.
+        sheet = workbook.createSheet("Testing");
+    }
 
     @Override
     public void write(List<? extends List<Map<String, Object>>> tables) throws Exception {
 
-        String dateTime = DateFormatUtils.format(Calendar.getInstance(),
-                "yyyyMMdd_HHmmss");
-        String outputFilename = FILE_NAME + "_" + dateTime + ".xlsx";
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Testing");
 
         List<Map<String, Object>> table = tables.get(0);
 
@@ -69,6 +75,11 @@ public class SpreadsheetWriter implements ItemWriter<List<Map<String, Object>>> 
 
         }
 
+    }
+    
+    
+    @AfterStep
+    public void afterStep() {
         try (FileOutputStream fos = new FileOutputStream(outputFilename)) {
             workbook.write(fos);
         } catch (FileNotFoundException fnf) {
@@ -77,6 +88,7 @@ public class SpreadsheetWriter implements ItemWriter<List<Map<String, Object>>> 
             Logger.getLogger(SpreadsheetWriter.class.getName()).log(Level.SEVERE, null, ioe);
         }
     }
+    
 
     private void createNumericCell(Row row, Double val, int col) {
         Cell cell = row.createCell(col);

@@ -21,7 +21,6 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -30,7 +29,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.separator.SuffixRecordSeparatorPolicy;
@@ -88,7 +86,8 @@ public class Batch {
     
     @Bean
     @StepScope
-    protected FlatFileItemReader<String> itemReader(@Value("#{jobParameters['input.file']}") String inputFile) {
+    protected FlatFileItemReader<String> itemReader(@Value("#{jobParameters['input.file']}") String inputFile, @Value("#{jobParameters['run.id']}") String runId) {
+        LOG.info("runId is {}", runId);
         FlatFileItemReader<String> reader = new FlatFileItemReader<>();
         final SuffixRecordSeparatorPolicy sepPolicy = new SuffixRecordSeparatorPolicy();
         sepPolicy.setSuffix(";");
@@ -129,7 +128,7 @@ public class Batch {
         return this.steps
                 .get("step1")
                 .<String, List<Map<String, Object>>>chunk(1)
-                .reader(itemReader(OVERRIDDEN_BY_EXPRESSION))
+                .reader(itemReader(OVERRIDDEN_BY_EXPRESSION, OVERRIDDEN_BY_EXPRESSION))
                 .processor(processor())
                 .writer(new SpreadsheetWriter())
                 .build();
