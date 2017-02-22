@@ -11,8 +11,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author comdotlinux
  */
 public class DatabaseQueryRunProcessor implements ItemProcessor<QueryData, QueryResult>{
+    
+    private final JdbcTemplate jdbcTemplate;
 
-    private JdbcTemplate jdbcTemplate;
+    public DatabaseQueryRunProcessor(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
 
     public QueryResult process(QueryData qd) throws Exception {
         

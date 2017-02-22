@@ -24,15 +24,21 @@ import org.springframework.batch.item.ItemWriter;
  */
 public class SpreadsheetWriter implements ItemWriter<QueryResult> {
 
-    private String outputDirectory;
+    private static final String TIMESTAMP = DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd_HHmmss");
+    private final String outputDirectory;
+
+    public SpreadsheetWriter(String outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+    
+    
 
     public void write(List<? extends QueryResult> results) throws Exception {
 
         for (QueryResult qr : results) {
 
             XSSFWorkbook workbook = new XSSFWorkbook();
-            String timestamp = DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd_HHmmss");
-            String outputFilename = outputDirectory + "/" + qr.getOutputfilename() + "_" + timestamp + ".xlsx";
+            String outputFilename = outputDirectory + "/" + qr.getOutputfilename() + "_" + TIMESTAMP + ".xlsx";
             XSSFSheet sheet = workbook.createSheet(qr.getOutputfilename());
 
             List<Map<String, Object>> table = qr.getTableData();
