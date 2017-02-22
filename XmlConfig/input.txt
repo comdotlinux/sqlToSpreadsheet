@@ -1,0 +1,3 @@
+actor:SELECT * FROM actor;
+
+film:SELECT * from film;

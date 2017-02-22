@@ -50,7 +50,7 @@
     <build>
         <finalName>sql-to-spreadsheet</finalName>
         <plugins>
-            <plugin>
+            <!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.0.0</version>
@@ -69,8 +69,8 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-<!--            <plugin>
+            </plugin>-->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.0.0</version>
@@ -91,15 +91,16 @@
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
                             <mainClass>org.springframework.batch.core.launch.support.CommandLineJobRunner</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 </project>
