@@ -16,6 +16,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemWriter;
 
 /**
@@ -24,22 +26,30 @@ import org.springframework.batch.item.ItemWriter;
  */
 public class SpreadsheetWriter implements ItemWriter<QueryResult> {
 
-    private static final String TIMESTAMP = DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd_HHmmss");
-    private final String outputDirectory;
+    private static final Logger LOG = Logger.getLogger(SpreadsheetWriter.class.getName());
 
-    public SpreadsheetWriter(String outputDirectory) {
+    private final String outputDirectory;
+    private final String outputFilename;
+    private XSSFWorkbook workbook;
+    private String outputFile;
+
+    public SpreadsheetWriter(String outputDirectory, String outputFilename) {
         this.outputDirectory = outputDirectory;
+        this.outputFilename = outputFilename;
     }
-    
-    
+
+    @BeforeStep
+    public void beforeStep() {
+        this.workbook = new XSSFWorkbook();
+        final String timestamp = DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd_HHmmss");
+        this.outputFile = outputDirectory + "/" + outputFilename + "_" + timestamp + ".xlsx";
+    }
 
     public void write(List<? extends QueryResult> results) throws Exception {
 
         for (QueryResult qr : results) {
 
-            XSSFWorkbook workbook = new XSSFWorkbook();
-            String outputFilename = outputDirectory + "/" + qr.getOutputfilename() + "_" + TIMESTAMP + ".xlsx";
-            XSSFSheet sheet = workbook.createSheet(qr.getOutputfilename());
+            XSSFSheet sheet = workbook.createSheet(qr.getOutputsheetname());
 
             List<Map<String, Object>> table = qr.getTableData();
 
@@ -50,7 +60,8 @@ public class SpreadsheetWriter implements ItemWriter<QueryResult> {
                 int t_col = 0;
                 for (Map.Entry<String, Object> entry : get.entrySet()) {
                     if (t_row == 0) {
-                        createStringCell(header, entry.getKey(), t_col);
+                        final String column_name = entry.getKey() != null ? entry.getKey().toUpperCase() : "";
+                        createStringCell(header, column_name, t_col);
                     }
                     Object value = entry.getValue();
                     if (value instanceof Integer) {
@@ -72,19 +83,21 @@ public class SpreadsheetWriter implements ItemWriter<QueryResult> {
                         t_col++;
                     }
                 }
-                try {
-                    FileOutputStream fos = new FileOutputStream(outputFilename);
-                    workbook.write(fos);
-
-                } catch (FileNotFoundException fnf) {
-                    Logger.getLogger(SpreadsheetWriter.class
-                            .getName()).log(Level.SEVERE, null, fnf);
-
-                } catch (IOException ioe) {
-                    Logger.getLogger(SpreadsheetWriter.class
-                            .getName()).log(Level.SEVERE, null, ioe);
-                }
             }
+        }
+    }
+
+    @AfterStep
+    public void afterStep() {
+        try {
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            workbook.write(fos);
+
+        } catch (FileNotFoundException fnf) {
+            LOG.log(Level.SEVERE, "The Output file could not be opened " + outputFile, fnf);
+
+        } catch (IOException ioe) {
+            LOG.log(Level.SEVERE, "There was an input output error while writing to " + outputFile, ioe);
         }
     }
 

@@ -51,7 +51,7 @@
     <bean id="queryData" class="com.linux.batch.QueryData" scope="prototype"/>
     
     <util:list id="columnNames">
-        <value>outputfilename</value>
+        <value>outputsheetname</value>
         <value>sqlquery</value>
     </util:list>
     
@@ -71,6 +71,7 @@
     
     <bean id="spreadsheetWriter" class="com.linux.batch.SpreadsheetWriter" scope="step">
         <constructor-arg name="outputDirectory" value="#{jobParameters['output.dir']}"/>
+        <constructor-arg name="outputFilename" value="#{jobParameters['output.file.name']}"/>
     </bean>
 	
     <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">

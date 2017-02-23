@@ -1,20 +1,13 @@
 package com.linux.batch;
 
 /**
- *
+ * Holds the sql query and the output sheet name for the same.
  * @author comdotlinux
  */
 public class QueryData {
-    private String outputfilename;
+
+    private String outputsheetname;
     private String sqlquery;
-
-    public String getOutputfilename() {
-        return outputfilename;
-    }
-
-    public void setOutputfilename(String outputfilename) {
-        this.outputfilename = outputfilename;
-    }
 
     public String getSqlquery() {
         return sqlquery;
@@ -23,6 +16,13 @@ public class QueryData {
     public void setSqlquery(String sqlquery) {
         this.sqlquery = sqlquery;
     }
-    
-    
+
+    public String getOutputsheetname() {
+        return outputsheetname;
+    }
+
+    public void setOutputsheetname(String outputsheetname) {
+        this.outputsheetname = outputsheetname;
+    }
+
 }

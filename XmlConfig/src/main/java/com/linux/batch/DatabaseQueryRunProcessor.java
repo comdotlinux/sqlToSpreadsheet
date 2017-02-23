@@ -22,7 +22,7 @@ public class DatabaseQueryRunProcessor implements ItemProcessor<QueryData, Query
     public QueryResult process(QueryData qd) throws Exception {
         
         List<Map<String, Object>> tableData = jdbcTemplate.query(qd.getSqlquery(), new ColumnMapRowMapper());
-        return new QueryResult(tableData, qd.getOutputfilename());
+        return new QueryResult(tableData, qd.getOutputsheetname());
     }
     
 }

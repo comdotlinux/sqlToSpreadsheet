@@ -15,17 +15,15 @@ import java.util.Map;
 public class QueryResult {
     
     private List<Map<String, Object>> tableData;
-    private String outputfilename;
+    private String outputsheetname;
 
-    public QueryResult(List<Map<String, Object>> tableData, String outputfilename) {
+    public QueryResult(List<Map<String, Object>> tableData, String outputsheetname) {
         this.tableData = tableData;
-        this.outputfilename = outputfilename;
+        this.outputsheetname = outputsheetname;
     }
 
     public QueryResult() {
     }
-    
-    
 
     public List<Map<String, Object>> getTableData() {
         return tableData;
@@ -35,13 +33,12 @@ public class QueryResult {
         this.tableData = tableData;
     }
 
-    public String getOutputfilename() {
-        return outputfilename;
+    public String getOutputsheetname() {
+        return outputsheetname;
     }
 
-    public void setOutputfilename(String outputfilename) {
-        this.outputfilename = outputfilename;
+    public void setOutputsheetname(String outputsheetname) {
+        this.outputsheetname = outputsheetname;
     }
-    
-    
+
 }
