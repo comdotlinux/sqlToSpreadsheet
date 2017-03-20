@@ -72,6 +72,7 @@
     <bean id="spreadsheetWriter" class="com.linux.batch.SpreadsheetWriter" scope="step">
         <constructor-arg name="outputDirectory" value="#{jobParameters['output.dir']}"/>
         <constructor-arg name="outputFilename" value="#{jobParameters['output.file.name']}"/>
+        <constructor-arg name="useTimestamp" value="#{jobParameters['timestamp.in.output.file.name']?:1l}"/>
     </bean>
 	
     <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
