@@ -1,4 +1,6 @@
 *.class
+*.xls*
+nbactions.xml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -14,3 +16,7 @@ hs_err_pid*
 /nbproject/
 /derby.log
 */target/*
+/XmlConfig/dependency-reduced-pom.xml
+/XmlConfig/nbproject/
+XmlConfig/nbactions.xml
+XmlConfig/input.txt
