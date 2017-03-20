@@ -32,12 +32,12 @@ public class SpreadsheetWriter implements ItemWriter<QueryResult> {
     private final String outputFilename;
     private XSSFWorkbook workbook;
     private String outputFile;
-    private final boolean useTimestamp;
+    private final boolean useTheTimestamp;
 
     public SpreadsheetWriter(String outputDirectory, String outputFilename, long useTimestamp) {
         this.outputDirectory = outputDirectory;
         this.outputFilename = outputFilename;
-        this.useTimestamp = useTimestamp == 1l;
+        this.useTheTimestamp = useTimestamp == 1l;
     }
 
     @BeforeStep
@@ -45,7 +45,7 @@ public class SpreadsheetWriter implements ItemWriter<QueryResult> {
         this.workbook = new XSSFWorkbook();
         final String timestamp = DateFormatUtils.format(Calendar.getInstance(), "yyyyMMdd_HHmmss");
         StringBuilder outputBuilder = new StringBuilder(outputDirectory).append("/");
-        if(useTimestamp) {
+        if(useTheTimestamp) {
             outputBuilder.append("_");
             outputBuilder.append(timestamp);
         }
